@@ -9,7 +9,7 @@ This package implements a Passport OAuth2 authentication strategy specifically c
 ## Installation
 
 ```bash
-npm install passport-oauth2-garmin
+npm install @racetrainer/passport-oauth2-garmin
 ```
 
 ## Usage
@@ -19,7 +19,7 @@ npm install passport-oauth2-garmin
 ```typescript
 import passport from 'passport';
 import { Request, Response } from 'express';
-import { GarminStrategy, GarminProfile } from 'passport-oauth2-garmin';
+import { GarminStrategy, type GarminProfile } from '@racetrainer/passport-oauth2-garmin';
 
 passport.use(new GarminStrategy({
   clientID: 'your-garmin-client-id',
