@@ -55,17 +55,21 @@ export class GarminStrategy extends OAuth2Strategy {
         _results: any,
         done: (error: any, user?: any) => void,
       ) => {
-        try {
-          const profile = await this.userProfile(accessToken);
-          verify(accessToken, refreshToken, profile, done);
-        } catch (error) {
-          done(error);
-        }
+
+          this.userProfile(accessToken, (error, profile: GarminProfile | undefined) => {
+            if (error ) {
+              done(error);
+            } else if (!profile) {
+              done(new InternalOAuthError('Failed to retrieve user profile',{}),{});
+            } else {  
+              verify(accessToken, refreshToken, profile, done);
+            }
+          });
       },
     );
   }
 
-  async userProfile(accessToken: string): Promise<GarminProfile> {
+  async userProfile(accessToken: string, done: (error: any, user?: GarminProfile) => void): Promise<void> {
     try {
       const res = await fetch(
         'https://apis.garmin.com/wellness-api/rest/user/id',
@@ -83,6 +87,7 @@ export class GarminStrategy extends OAuth2Strategy {
         );
       }
       const userData = await res.json();
+
       // TODO: we could get permissions here and provide that in the callback
       const profile: GarminProfile = {
         id: userData.userId,
@@ -91,9 +96,9 @@ export class GarminStrategy extends OAuth2Strategy {
         _json: userData,
       };
 
-      return profile;
+      done(null, profile);
     } catch (error) {
-      throw new Error(`Failed to retrieve user profile: ${error}`);
+      done(new InternalOAuthError(`Failed to retrieve user profile`,error));
     }
   }
 }

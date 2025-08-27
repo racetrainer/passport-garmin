@@ -9,7 +9,7 @@ This package implements a Passport OAuth2 authentication strategy specifically c
 ## Installation
 
 ```bash
-npm install @racetrainer/passport-oauth2-garmin
+npm install @racetrainer/passport-garmin
 ```
 
 ## Usage
@@ -19,14 +19,14 @@ npm install @racetrainer/passport-oauth2-garmin
 ```typescript
 import passport from 'passport';
 import { Request, Response } from 'express';
-import { GarminStrategy, type GarminProfile } from '@racetrainer/passport-oauth2-garmin';
+import { GarminStrategy, type GarminProfile } from '@racetrainer/passport-garmin';
 
 passport.use(new GarminStrategy({
   clientID: 'your-garmin-client-id',
   clientSecret: 'your-garmin-client-secret',
   callbackURL: 'http://localhost:3000/auth/garmin/callback', // must match the redirect URI in your Garmin developer portal
 }, (accessToken: string, refreshToken: string, profile: GarminProfile, done: (error: any, user?: any) => void) => {
-  // Handle user authentication
+  // do any additional processing here, such as saving the user to a database
   return done(null, profile);
 }));
 ```
@@ -35,8 +35,17 @@ passport.use(new GarminStrategy({
 
 ```typescript
 import express, { Request, Response } from 'express';
+import session from 'express-session';
 
 const app = express();
+
+// use session middleware
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: true, sameSite: 'lax' },
+}));
 
 // Configure passport middleware
 app.use(passport.initialize());
@@ -47,9 +56,9 @@ app.get('/auth/garmin', passport.authenticate('garmin'));
 
 // handle callback from garmin with state stored in session data
 app.get('/auth/garmin/callback', 
-  passport.authenticate('garmin', { failureRedirect: '/login' }),
+  passport.authenticate('garmin', { failureRedirect: '/error' }),
   (req: Request & { user: { profile: GarminProfile, accessToken: string, refreshToken: string, expiresAt: number } }, res: Response) => {
-    // successful authentication, do something with the user data and auth tokens
+    // successful authentication, redirect to dashboard
     res.redirect('/dashboard');
   }
 );
