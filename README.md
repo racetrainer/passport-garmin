@@ -1,4 +1,4 @@
-# passport-oauth2-garmin
+# passport-garmin
 
 A Passport OAuth2 strategy implementation for Garmin Connect OAuth2 endpoints.
 
