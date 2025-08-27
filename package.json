@@ -1,11 +1,32 @@
 {
-  "name": "@racetrainer/passport-oauth2-garmin",
-  "version": "1.0.0",
+  "name": "@racetrainer/passport-garmin",
+  "version": "0.0.5",
   "description": "Passport OAuth2 Strategy implementation for Garmin Connect",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "files": [
+    "lib",
+    "README.md",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/racetrainer/passport-oauth2-garmin.git"
+  },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf lib && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

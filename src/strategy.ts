@@ -57,7 +57,6 @@ export class GarminStrategy extends OAuth2Strategy {
       ) => {
         try {
           const profile = await this.userProfile(accessToken);
-          console.log('profile', profile);
           verify(accessToken, refreshToken, profile, done);
         } catch (error) {
           done(error);
